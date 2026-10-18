@@ -1,1 +1,50 @@
-Hola
+WEEK 1
+Today, we did the following:
+
+Downloaded the Arduino IDE (latest version: 2.3.10).
+When you plug in the cable to the main component (the one with the little drawing on it), you should see some lights turn on on your Arduino.
+Upon opening the software, a screen appears with a new "sketch". It contains some code, do not delete it.
+`void setup()`: This is where you place your commands.
+`void loop()`: This is where the main code goes, it contains the instructions you want to repeat continuously.
+`void`: This indicates that something is absent. When placed before a function, it means the function does not return any value (this avoids the need for a `return` statement).
+Saving a sketch: By default, everything is saved into a folder that is automatically created by the Arduino software. You must name this folder the same as the name you’ve given your sketch, otherwise, you will encounter an error.
+Connecting the hardware to the code: Select "Board" (Arduino Uno). The output area allows you to view data regarding the component.
+Next, select the "Port" (choose the one labeled "Arduino Uno"). It is important to select the correct one.
+Once everything is properly configured, you can click "Upload" (the arrow icon next to the checkmark).
+Arduino uses two types of pins: output and input.
+For `digitalWrite`, you can specify either `HIGH` or `LOW`; this controls the voltage.
+To alternate between `HIGH` and `LOW`, you need to add a `delay` to create dynamic behavior; for it to work correctly, the sequence must be included twice.
+
+Code for the FIRST EXERCISE:
+
+void setup() {
+	pinMode(13, OUTPUT);
+}
+
+void loop() {
+digitalWrite(13, HIGH); // on - 5v
+delay(1000); //1000 milisecond
+	digitalWrite(13, LOW); // off - 0v
+	delay(1000);
+	// put your main code here, to run repeatedly
+}
+
+
+BEFORE MAKING ANY CHANGES, IT IS IMPORTANT TO UNPLUG THE COMPUTER CABLE
+
+Part Two: LEDs
+The + is the anode, and the - is the cathode. To tell them apart, look for the longer leg, which is the +. If the legs are missing, there is a flattened (scraped) side that indicates where the - goes.
+The + connects to pin 13, and the - connects to pin 12.
+
+Part Three: THE BREADBOARD
+Do not plug anything into the lines along the edge (where there are no letters).
+Now, let’s look at the wires. There are several types of wires:
+Jumper Wires
+Types: M/M (male-to-male), M/F (male-to-female), F/F (female-to-female)
+Good habits: Use red or orange wires for +, and black or blue wires for -.
+NEVER DO THIS: Directly connect the + and - terminals.
+
+RESISTORS:
+
+They have different values, which are indicated by numbers.
+For this lesson, a 220 ohm resistor was required (for Exercise 2).
