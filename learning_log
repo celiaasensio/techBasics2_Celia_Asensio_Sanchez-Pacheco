@@ -48,3 +48,111 @@ RESISTORS:
 
 They have different values, which are indicated by numbers.
 For this lesson, a 220 ohm resistor was required (for Exercise 2).
+
+
+WEEK 2
+Today, we did the following:
+
+(A quick tip to remember:
+The row on the left side of the Arduino board is for providing power (for example, 5V).
+The row on the right side is for control via code (so far, we’ve been using pin 13)).
+
+-Exercise 1: Series Circuit
+Power your breadboard with the power supply module
+Set it on 5v
+
+At first we thought we had problems with the battery, but then we discovered that the problem was that we had put the LEDs backwards (we had put the + in the - and the - in the +). Note for next time: in the images, the + is the one with the strange leg.
+
+
+-Exercise 2: Parallel Circuit
+Now let’s change it to a parallel circuit.
+
+We do this so that they don’t depend on each other, but more resistors are needed.
+
+
+-Exercise 3: Traffic Light
+Connect one red, one yellow, and one green LED to pin 2, 3, 4 on your Arduino
+challenge
+Try to write a program to make the LEDs shine simultaneously and then in sequence.
+Tip: define the pins as variables
+constant: (we can't change the number).
+
+CODE FOR THE EXERCISE:
+const int redLED = 2;
+const int yellowLED = 3;
+const int greenLED = 4;
+
+
+void setup() {
+  pinMode(redLED, OUTPUT);
+  pinMode(yellowLED, OUTPUT);
+  pinMode(greenLED, OUTPUT);
+}
+
+
+void loop() {
+  digitalWrite(redLED, HIGH);
+  delay(1000);
+  digitalWrite(redLED, LOW);
+  delay(1000);
+
+
+  digitalWrite(yellowLED, HIGH);
+  delay(1000);
+  digitalWrite(yellowLED, LOW);
+  delay(1000);
+
+
+  digitalWrite(greenLED, HIGH);
+  delay(1000);
+  digitalWrite(greenLED, LOW);
+  delay(1000);
+  // put your main code here, to run repeatedly
+}
+
+
+-Exercise 4:
+How will you connect this RGB LED to Arduino?
+How many resistors do you need?
+How to set color to yellow on an RGB LED? You need to mix the
+
+Challenge:
+Write a setRGB() function that accepts RGB values ​​to change color freely
+Use it to modify the RGB LED to different colors
+You will need a new function: analogWrite()
+void setRGB (int redValue, int greenValue, int blueValue) {
+
+CODE FOR THE EXERCISE:
+const int redLED = 2;
+const int greenLED = 3;
+const int blueLED = 4;
+
+
+void setup() {
+  pinMode(redLED, OUTPUT);
+  pinMode(greenLED, OUTPUT);
+  pinMode(blueLED, OUTPUT);
+}
+
+void loop() {
+  setRGB(255,0,0); //red color
+  delay(1000);
+  setRGB(0,255,0); //green color
+  delay(1000);
+  setRGB(0,0,255); //blue color
+  delay(1000);
+  setRGB(255,0,255); //purple color
+  delay(1000);
+  setRGB(255,255,0); //cyan color
+  delay(1000);
+  setRGB(0,255,255); //yellow color
+  delay(1000);
+}
+
+void setRGB(int redValue, int greenValue, int blueValue){
+  analogWrite(redLED, redValue);
+  analogWrite(greenLED, greenValue);
+  analogWrite(blueLED, blueValue);
+}
+
+(The only thing we need to do to change the color is use `setRGB` and `delay`: for the colors, we follow the numerical order (red, green, blue), and for the light intensity, we use the value 255.)
