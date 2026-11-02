@@ -156,3 +156,156 @@ void setRGB(int redValue, int greenValue, int blueValue){
 }
 
 (The only thing we need to do to change the color is use `setRGB` and `delay`: for the colors, we follow the numerical order (red, green, blue), and for the light intensity, we use the value 255.)
+
+
+WEEK 3
+Today, we did the following:
+
+EXERCISE 1 Fade in/out a LED
+Connect one LED to a PWM pin (with a 220 resistor)
+Use analogWrite() to control its brightness.
+Code:
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(13, OUTPUT);
+}
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  analogWrite(13, 100);
+  delay(1000);
+  analogWrite(13, 200);
+  delay(1000);
+}
+
+
+CODING CHALLENGE
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(13, OUTPUT);
+}
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  //fade in
+  for (int i = 0; i <= 255; i += 5){
+    analogWrite(13, i);
+    delay(20);
+  }
+// fade out
+  for (int i = 255; i >= 0; i -= 5){
+    analogWrite(13, i);
+    delay(20);
+}
+
+Then we learned the function of Serial.print()
+
+EXERCISE 2 DigitalRead() 
+Try out DigitalRead() with Tilt switch 
+Print the result in your serial Monitor 
+Set pinMode() to INPUT or INPUT_PULLUP and compare the differences
+
+Code:
+const int tiltSensor = 2;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode (tiltSensor, INPUT);
+  Serial.begin(9600); //default value
+  delay(500);
+  Serial.println("Hello");
+}
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  Serial.println(digitalRead(tiltSensor));
+}
+
+INPUT_PULLUP 
+Ask Arduino to use internal pull-up resistors (resistors that connect to power internally) 
+Prevents Floating Pins: Without a pull-up or pull-down resistor, an unconnected pin "floats," picking up electrical noise and returning random, unstable HIGH or LOW values.
+Code:
+const int tiltSensor = 2;
+int value = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode (tiltSensor, INPUT_PULLUP);
+  Serial.begin(9600); //default value
+  delay(500);
+  Serial.println("Hello");
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  value = digitalRead(tiltSensor);
+  Serial.print("tiltSensor");
+  Serial.println(value);
+}
+
+EXERCISE 3 AnalogRead() 
+Try analogRead() with a potentiometer on A0 
+Print the reading and check it in Serial Plotter 
+Try to switch 5v/ground
+
+(At first I set it up incorrectly and it smelled bad, but then I’ve fixed it.)
+
+CHALLENGE:
+ // Personal note: To learn more about `map()`, you can search for "map() Arduino" on Google.
+Code:
+const int pot = A0;
+const int led = 3;
+
+int value = 0;
+int brightness = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode (A0, INPUT);
+  pinMode (led, OUTPUT);
+  Serial.begin(9600); //default value
+  delay(500);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  value = analogRead(pot);
+  Serial.print("Pot");
+  Serial.println(value);
+  brightness = map(value, 0, 1023, 0, 255);
+  analogWrite(led, brightness);  
+}
+
+EXERCISE 5 analogRead() with Photoresistor
+Code:
+const int pot = A0;
+const int led = 3;
+int value = 0;
+int brightness = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode (A0, INPUT);
+  pinMode (led, OUTPUT);
+  Serial.begin(9600); //default value
+  delay(500);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  value = analogRead(pot);
+  Serial.print("Photoresistor:");
+  Serial.println(value);
+
+  if (value > 400){
+    digitalWrite(led, LOW);
+  } else {
+    digitalWrite(led, HIGH);
+  }
+  analogWrite(led, brightness);  
+}
