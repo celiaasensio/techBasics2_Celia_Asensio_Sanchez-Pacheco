@@ -504,3 +504,284 @@ I created a circuit, but I didn't know how to write the code.
 WEEK 5
 
 I was sick and didn't go to class.
+
+
+WEEK 6
+
+Exercise 1: moveDegrees()
+
+Code: 
+/***
+Example Code to make a stepper motor move
+***/
+// We are using the CheapStepper library
+#include <CheapStepper.h>
+
+// Connect pins 8,9,10,11 to IN1,IN2,IN3,IN4 on ULN2003 board
+CheapStepper stepper (8,9,10,11); 
+
+const int stepsPerRevolution = 1024;
+// This number defines how many steps are needed per one revolution (round)
+// by default the value is 4096, the stepper motor in Miuzei needs 1024.
+// If you are switching to another stepper motor, always check this value
+// first before doing any other more complicated movements.
+
+boolean moveClockwise = true;
+void setup() {
+
+  stepper.setRpm(10);  // the default is ~16.25rpm
+  // we set to 10 for safe, high torque movement
+  // -> 10 rounds per minute
+  // Range: 6RPM - 14RPM when powered from Arduino
+  //        2RPM - 24RPM when powered from other resources
+  stepper.setTotalSteps(stepsPerRevolution); 
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Ask the stepper motor to move one full round
+  // pay attention that this is a block function
+  // meaning it won't go to the next line until it finishes the movement
+  stepper.moveDegrees (moveClockwise, 360);
+  // use this line to observe the current step
+  Serial.println(stepper.getStep()); 
+  // wait
+  delay(1000);
+}
+
+Exercise 2: move() VS moveTo()
+If I want to change the pointer’s direction, I must change “true” to “false.”
+
+Code:
+/***
+Example Code to make a stepper motor move to specific location
+Notice that the Arduino sketch "pauses" during move()
+***/
+
+// We are using the CheapStepper library
+#include <CheapStepper.h>
+
+// Connect pins 8,9,10,11 to IN1,IN2,IN3,IN4 on ULN2003 board
+CheapStepper stepper (8,9,10,11);
+
+// This number defines how many steps are needed per one revolution
+const int stepsPerRevolution = 1024;
+
+void setup()
+{
+  Serial.begin(9600);
+  stepper.setRpm(10);  // the default is ~16.25rpm
+  // Range: 6RPM - 14RPM when powered from Arduino
+  //        2RPM - 24RPM when powered from other resources
+  stepper.setTotalSteps(stepsPerRevolution); 
+  stepper.moveTo(true, 0); // set to step 0
+}
+void loop() {
+  stepper.moveTo(true, stepsPerRevolution/4);  // Position: 90 degree
+  Serial.println(stepper.getStep()); 
+  delay(1000);
+  stepper.moveTo(true, stepsPerRevolution/2);  // Position: 180 degree
+  Serial.println(stepper.getStep()); 
+  delay(1000);
+  stepper.moveTo(true, stepsPerRevolution/4*3); // Position: 270 degree
+  Serial.println(stepper.getStep()); 
+  delay(1000);
+}
+
+Code to change direction:
+/***
+Example Code to make a stepper motor move to specific location
+Notice that the Arduino sketch "pauses" during move()
+***/
+
+// We are using the CheapStepper library
+#include <CheapStepper.h>
+
+// Connect pins 8,9,10,11 to IN1,IN2,IN3,IN4 on ULN2003 board
+CheapStepper stepper (8,9,10,11);
+
+// This number defines how many steps are needed per one revolution
+const int stepsPerRevolution = 1024;
+
+bool moveCW = true;
+void setup()
+{
+  Serial.begin(9600);
+  stepper.setRpm(10);  // the default is ~16.25rpm
+  // Range: 6RPM - 14RPM when powered from Arduino
+  //        2RPM - 24RPM when powered from other resources
+  stepper.setTotalSteps(stepsPerRevolution);
+  stepper.moveTo(true, 0); // set to step 0
+}
+void loop() {
+
+  stepper.moveTo(moveCW, stepsPerRevolution/4);  // Position: 90 degree
+  Serial.println(stepper.getStep());
+  delay(1000);
+  stepper.moveTo(moveCW, stepsPerRevolution/2);  // Position: 180 degree
+  Serial.println(stepper.getStep());
+  delay(1000);
+  stepper.moveTo(moveCW, stepsPerRevolution/4*3); // Position: 270 degree
+  Serial.println(stepper.getStep());
+  delay(1000);
+
+  moveCW = !moveCW; 
+}
+
+
+Exercise 3: Move and more
+Code:
+/***
+Example Code to make a stepper motor move without stopping the sketch
+***/
+
+// We are using the CheapStepper library
+#include <CheapStepper.h>
+
+// Connect pins 8,9,10,11 to IN1,IN2,IN3,IN4 on ULN2003 board
+CheapStepper stepper (8,9,10,11);
+
+// This number defines how many steps are needed per one revolution
+// this is the case for miuzei, 4076/4096 for elegoo
+// http://forum.arduino.cc/index.php?topic=71964.15
+const int stepsPerRevolution = 1024;
+bool moveClockwise = true;
+int stepsLeft = 0; // how many steps are left from the current movement
+
+void setup()
+{
+  // Start serial
+  Serial.begin(9600);
+  // Stepper Setups
+  stepper.setRpm(6);  // The default is ~16.25rpm
+  // Range: 6RPM - 14RPM when powered from Arduino
+  //        2RPM - 24RPM when powered from other resources
+  stepper.setTotalSteps(stepsPerRevolution); 
+}
+
+void loop() {
+  stepper.run();
+  ////////////////////////////////
+  // now the stepper is moving, //
+  // let's do some other stuff! //
+  ////////////////////////////////
+  stepsLeft = stepper.getStepsLeft();
+  // if the current move is done...
+  if (stepsLeft == 0){
+    delay(500);
+    Serial.println("0");
+    // let's start a new move in the reverse direction
+    moveClockwise = !moveClockwise; // reverse direction
+    stepper.newMoveDegrees(moveClockwise, 120); // move 120 degrees from current position
+    
+    // Or use newMove()
+    // stepper.newMove(moveClockwise, stepsPerRevolution/3);
+  } 
+}
+
+Code to Add a touch sensor/button at pin 2:
+
+/***
+Example Code to make a stepper motor move without stopping the sketch
+***/
+
+// We are using the CheapStepper library
+#include <CheapStepper.h>
+
+// Connect pins 8,9,10,11 to IN1,IN2,IN3,IN4 on ULN2003 board
+CheapStepper stepper (8,9,10,11);
+
+// This number defines how many steps are needed per one revolution
+// this is the case for miuzei, 4076/4096 for elegoo
+// http://forum.arduino.cc/index.php?topic=71964.15
+const int stepsPerRevolution = 1024;
+bool moveClockwise = true;
+int stepsLeft = 0; // how many steps are left from the current movement
+
+void setup()
+{
+  // Start serial
+  Serial.begin(9600);
+  // Stepper Setups
+  stepper.setRpm(6);  // The default is ~16.25rpm
+  // Range: 6RPM - 14RPM when powered from Arduino
+  //        2RPM - 24RPM when powered from other resources
+  stepper.setTotalSteps(stepsPerRevolution);
+}
+
+void loop() {
+
+  stepper.run();
+  Serial.println(digitalRead(2));
+
+  ////////////////////////////////
+  // now the stepper is moving, //
+  // let's do some other stuff! //
+  ////////////////////////////////
+
+  stepsLeft = stepper.getStepsLeft();
+  // if the current move is done...
+  if (stepsLeft == 0){
+    delay(500);
+    Serial.println("0");
+    // let's start a new move in the reverse direction
+    moveClockwise = !moveClockwise; // reverse direction
+    stepper.newMoveDegrees(moveClockwise, 120); // move 120 degrees from current position
+    // Or use newMove()
+    // stepper.newMove(moveClockwise, stepsPerRevolution/3);
+  }
+}
+
+Code to stop the motor when touch sensor is touched:
+/***
+Example Code to make a stepper motor move without stopping the sketch
+***/
+
+// We are using the CheapStepper library
+#include <CheapStepper.h>
+
+// Connect pins 8,9,10,11 to IN1,IN2,IN3,IN4 on ULN2003 board
+CheapStepper stepper (8,9,10,11);
+
+// This number defines how many steps are needed per one revolution
+// this is the case for miuzei, 4076/4096 for elegoo
+// http://forum.arduino.cc/index.php?topic=71964.15
+const int stepsPerRevolution = 1024;
+bool moveClockwise = true;
+int stepsLeft = 0; // how many steps are left from the current movement
+
+void setup()
+{
+  // Start serial
+  Serial.begin(9600);
+  // Stepper Setups
+  stepper.setRpm(6);  // The default is ~16.25rpm
+  // Range: 6RPM - 14RPM when powered from Arduino
+  //        2RPM - 24RPM when powered from other resources
+  stepper.setTotalSteps(stepsPerRevolution);
+}
+
+void loop() {
+  if(digitalRead(2) == 1 ) {
+    stepper.run();
+  }
+ 
+  Serial.println(digitalRead(2));
+
+  ////////////////////////////////
+  // now the stepper is moving, //
+  // let's do some other stuff! //
+  ////////////////////////////////
+
+  stepsLeft = stepper.getStepsLeft();
+  // if the current move is done...
+  if (stepsLeft == 0){
+    delay(500);
+    Serial.println("0");
+    // let's start a new move in the reverse direction
+    moveClockwise = !moveClockwise; // reverse direction
+    stepper.newMoveDegrees(moveClockwise, 120); // move 120 degrees from current position
+    // Or use newMove()
+    // stepper.newMove(moveClockwise, stepsPerRevolution/3);
+  }
+}
