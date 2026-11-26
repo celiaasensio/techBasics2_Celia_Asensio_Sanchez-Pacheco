@@ -785,3 +785,104 @@ void loop() {
     // stepper.newMove(moveClockwise, stepsPerRevolution/3);
   }
 }
+
+
+WEEK 7
+
+The silver stripe on the diode must go to the motor's ground (which is the black wire).
+
+Exercise 1 DC Motor Transistor + Diode
+
+Code:
+const int motorPin = 3;
+
+void setup() {
+  // put your setup code here, to run once:
+    pinMode(motorPin, OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  digitalWrite(motorPin, HIGH);    
+  delay(1000);    
+  digitalWrite(motorPin, LOW);
+  delay(500);    
+}
+
+
+Exercise 2: Button as a Toggle Switch
+
+Code:
+const int motorPin = 3;
+const int potPin = A0;
+
+int potValue = 0;
+int motorSpeed = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+    pinMode(motorPin, OUTPUT);
+    Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+ 
+//digitalWrite(motorPin, HIGH);    
+  //delay(1000);    
+  //digitalWrite(motorPin, LOW);
+  //delay(500);
+   
+   potValue = analogRead(potPin);
+   Serial.println(potValue);
+   motorSpeed = map(potValue, 0, 1023, 0,255);
+   analogWrite(motorPin, motorSpeed);
+}
+
+
+Exercise 2: Challenge
+
+Code:
+const int motorPin = 3;
+const int potPin = A0;
+const int buttonPin = 2;
+
+int potValue = 0;
+int motorSpeed = 0;
+int buttonState = 1;
+int previousState = 1;
+
+bool motorOn = true;
+
+void setup() {
+  // put your setup code here, to run once:
+    pinMode(motorPin, OUTPUT);
+    Serial.begin(9600);
+    pinMode(buttonPin, INPUT_PULLUP);
+}
+
+void loop() {
+  buttonState = digitalRead(buttonPin);
+  // put your main code here, to run repeatedly:
+   Serial.print(digitalRead(buttonPin));
+   Serial.print ("");
+
+   //When the button is released 0 -> 1
+   if (previousState == 0 && buttonState) {
+    motorOn = !motorOn;
+   }
+
+   if (motorOn) {
+    potValue = analogRead(potPin);
+    Serial.println(potValue);
+    motorSpeed = map(potValue, 0, 1023, 0,255);
+    analogWrite(motorPin, motorSpeed);
+   } else {
+      digitalWrite(motorPin, LOW);
+      Serial.println("");
+    }
+  previousState = buttonState;
+}
+
+
+
